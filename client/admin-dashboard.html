@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ABC College</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .logout-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-card h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .card-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .students-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .students-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .students-header h2 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1em;
+            width: 250px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .students-table th,
+        .students-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .students-table th {
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .students-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .action-btn.delete {
+            background: #ff6b6b;
+        }
+
+        .action-btn.delete:hover {
+            background: #ff5252;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                text-align: center;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .students-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .students-table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Welcome back, <span id="adminName">Admin</span>!</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>Add New Student</h3>
+                <p>Register a new student in the system with their basic information and initial marks.</p>
+                <a href="/admin/add-student" class="card-btn">Add Student</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Add New Admin</h3>
+                <p>Create a new admin account with access to the management system.</p>
+                <a href="/admin/add-admin" class="card-btn">Add Admin</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Update Student Marks</h3>
+                <p>Update semester marks for existing students in the system.</p>
+                <button class="card-btn" onclick="showUpdateMarksModal()">Update Marks</button>
+            </div>
+        </div>
+
+        <div class="students-section">
+            <div class="students-header">
+                <h2>All Students</h2>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search students...">
+                    <button class="card-btn" onclick="refreshStudents()">Refresh</button>
+                </div>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading students...</p>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <table class="students-table" id="studentsTable">
+                <thead>
+                    <tr>
+                        <th>Reg No</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Date of Birth</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsBody">
+                    <!-- Students will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Update Marks Modal -->
+    <div id="updateMarksModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateMarksModal()">&times;</span>
+            <h2>Update Student Marks</h2>
+            <form id="updateMarksForm">
+                <div class="form-group">
+                    <label for="updateRegNo">Registration Number:</label>
+                    <input type="text" id="updateRegNo" name="regNo" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateSemester">Semester:</label>
+                    <select id="updateSemester" name="semester" required>
+                        <option value="">Select Semester</option>
+                        <option value="sem1">Semester 1</option>
+                        <option value="sem2">Semester 2</option>
+                        <option value="sem3">Semester 3</option>
+                        <option value="sem4">Semester 4</option>
+                        <option value="sem5">Semester 5</option>
+                        <option value="sem6">Semester 6</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateMarks">Marks (comma-separated):</label>
+                    <input type="text" id="updateMarks" name="marks" placeholder="85,90,78,82,88,92" required>
+                </div>
+                <button type="submit" class="card-btn">Update Marks</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let allStudents = [];
+
+        // Check if admin is logged in
+        window.addEventListener('load', () => {
+            const adminData = JSON.parse(sessionStorage.getItem('adminData'));
+            if (!adminData) {
+                window.location.href = '/admin';
+                return;
+            }
+            
+            document.getElementById('adminName').textContent = adminData.name;
+            loadStudents();
+        });
+
+        // Load all students
+        async function loadStudents() {
+            const loading = document.getElementById('loading');
+            const alert = document.getElementById('alert');
+            
+            loading.style.display = 'block';
+            alert.style.display = 'none';
+            
+            try {
+                const response = await fetch('/admin/students');
+                const result = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (result.success) {
+                    allStudents = result.students;
+                    displayStudents(allStudents);
+                } else {
+                    showAlert('error', result.error);
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showAlert('error', 'Failed to load students');
+            }
+        }
+
+        // Display students in table
+        function displayStudents(students) {
+            const tbody = document.getElementById('studentsBody');
+            tbody.innerHTML = '';
+            
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #666;">No students found</td></tr>';
+                return;
+            }
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.regNo}</td>
+                    <td>${student.name}</td>
+                    <td>${student.department}</td>
+                    <td>${new Date(student.dob).toLocaleDateString()}</td>
+                    <td>
+                        <button class="action-btn" onclick="viewStudent('${student.regNo}')">View</button>
+                        <button class="action-btn delete" onclick="deleteStudent('${student.regNo}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Search students
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredStudents = allStudents.filter(student => 
+                student.regNo.toLowerCase().includes(searchTerm) ||
+                student.name.toLowerCase().includes(searchTerm) ||
+                student.department.toLowerCase().includes(searchTerm)
+            );
+            displayStudents(filteredStudents);
+        });
+
+        // View student details
+        function viewStudent(regNo) {
+            const student = allStudents.find(s => s.regNo === regNo);
+            if (student) {
+                let marksInfo = '';
+                for (let sem in student.marks) {
+                    if (student.marks[sem] && student.marks[sem].length > 0) {
+                        marksInfo += `${sem.toUpperCase()}: ${student.marks[sem].join(', ')}\n`;
+                    }
+                }
+                
+                alert(`Student Details:\n\nReg No: ${student.regNo}\nName: ${student.name}\nDepartment: ${student.department}\nDate of Birth: ${new Date(student.dob).toLocaleDateString()}\n\nMarks:\n${marksInfo || 'No marks recorded'}`);
+            }
+        }
+
+        // Delete student
+        async function deleteStudent(regNo) {
+            if (!confirm(`Are you sure you want to delete student ${regNo}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/admin/delete-student/${regNo}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', result.message);
+                    loadStudents(); // Refresh the list
+                } else {
+                    showAlert('error', result.error);
+                }
+            } catch (error) {
+                showAlert('error', 'Failed to delete student');
+            }
+        }
+
+        // Show update marks modal
+        function showUpdateMarksModal() {
+            document.getElementById('updateMarksModal').style.display = 'block';
+        }
+
+        // Close update marks modal
+        function closeUpdateMarksModal() {
+            document.getElementById('updateMarksModal').style.display = 'none';
+            document.getElementById('updateMarksForm').reset();
+        }
+
+        // Update marks form submission
+        document.getElementById('updateMarksForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/admin/update-marks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', result.message);
+                    closeUpdateMarksModal();
+                    loadStudents(); // Refresh the list
+                } else {
+                    showAlert('error', result.error);
+                }
+            } catch (error) {
+                showAlert('error', 'Failed to update marks');
+            }
+        });
+
+        // Refresh students
+        function refreshStudents() {
+            loadStudents();
+        }
+
+        // Show alert
+        function showAlert(type, message) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('adminData');
+            window.location.href = '/admin';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('updateMarksModal');
+            if (event.target === modal) {
+                closeUpdateMarksModal();
+            }
+        }
+    </script>
+</body>
+</html>

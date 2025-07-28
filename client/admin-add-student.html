@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student | Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input:valid,
+        .form-group select:valid {
+            border-color: #28a745;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .form-hint {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="/admin-dashboard" class="back-link">← Back to Admin Dashboard</a>
+
+        <div class="header">
+            <h1>Add New Student</h1>
+            <p>Enter student details to add them to the system</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="addStudentForm">
+            <div class="form-group">
+                <label for="regNo">Registration Number *</label>
+                <input type="text" id="regNo" name="regNo" required>
+                <div class="form-hint">Enter the student's unique registration number</div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Student Name *</label>
+                <input type="text" id="name" name="name" required>
+                <div class="form-hint">Enter the student's full name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Upload Student Photo *</label>
+                <input type="file" id="photo" name="photo" accept="image/*" required>
+                <div class="form-hint">Upload clear passport-size photo (JPG/PNG)</div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="dob">Date of Birth *</label>
+                <input type="date" id="dob" name="dob" required>
+                <div class="form-hint">Select the student's date of birth</div>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department *</label>
+                <select id="department" name="department" required>
+                    <option value="">Select Department</option>
+                    <option value="CSE">Computer Science Engineering</option>
+                    <option value="AI&DS">Artificial Intelligence & Data Science</option>
+                    <option value="EEE">Electrical & Electronics Engineering</option>
+                    <option value="MECH">Mechanical Engineering</option>
+                    <option value="ECE">Electronics & Communication Engineering</option>
+                    <option value="CIVIL">Civil Engineering</option>
+                </select>
+                <div class="form-hint">Select the student's department</div>
+            </div>
+
+            <div class="form-group">
+                <label for="sem1">Semester 1 Marks (Optional)</label>
+                <input type="text" id="sem1" name="sem1" placeholder="85,90,78,82,88,92">
+                <div class="form-hint">Enter 6 subject marks separated by commas (0-100)</div>
+            </div>
+
+            <button type="submit" class="btn">Add Student</button>
+        </form>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Adding student...</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('addStudentForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Create a FormData object directly from the form
+            const formData = new FormData(this);
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.querySelector('.btn').disabled = true;
+
+            try {
+                // Send the FormData object directly as the body for file uploads
+                const response = await fetch('/admin/add-student', {
+                    method: 'POST',
+                    // No 'Content-Type' header needed; browser sets it automatically for FormData
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('.btn').disabled = false;
+
+                const alertDiv = document.getElementById('alert');
+                alertDiv.style.display = 'block';
+
+                if (result.success) {
+                    alertDiv.className = 'alert success';
+                    alertDiv.textContent = result.message;
+
+                    // Clear form
+                    this.reset();
+
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/admin-dashboard';
+                    }, 2000);
+                } else {
+                    alertDiv.className = 'alert error';
+                    alertDiv.textContent = result.error;
+                }
+            } catch (error) {
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('.btn').disabled = false;
+
+                const alertDiv = document.getElementById('alert');
+                alertDiv.style.display = 'block';
+                alertDiv.className = 'alert error';
+                alertDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // Input validation for Semester 1 Marks
+        document.getElementById('sem1').addEventListener('input', function (e) {
+            const marks = e.target.value.split(',');
+            const hint = e.target.nextElementSibling;
+
+            if (e.target.value && marks.length > 0) {
+                let valid = true;
+                for (let mark of marks) {
+                    const num = parseInt(mark.trim());
+                    if (isNaN(num) || num < 0 || num > 100) {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (!valid) {
+                    hint.textContent = 'Please enter valid marks (0-100) separated by commas';
+                    hint.style.color = '#e74c3c';
+                } else {
+                    hint.textContent = 'Enter 6 subject marks separated by commas (0-100)';
+                    hint.style.color = '#666';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
